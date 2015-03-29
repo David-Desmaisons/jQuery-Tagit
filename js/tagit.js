@@ -39,6 +39,12 @@
             tagsChanged:function (tagValue, action, element) {
                 ;
             },
+
+            //factory for newly created object
+            createTagValue:function (tagValue, callback) {
+                callback(tagValue);
+            },
+
             maxTags:undefined,
             //should 'paste' event trigger 'blur', thus potentially adding a new tag
             // (true for backwards compatibility)
@@ -398,40 +404,50 @@
             if (label == "")
                 return false;
 
-            var tag = this.tag(label, value);
-            tag.element = $('<li class="tagit-choice"'
-                + (value !== undefined ? ' tagValue="' + value + '"' : '') + '>'
-                + (this.options.sortable == 'handle' ? '<a class="ui-icon ui-icon-grip-dotted-vertical" style="float:left"></a>' : '')
-                + '<span class="tagit-text">' + tag.labelHtml() + '</span><a class="tagit-close">x</a></li>');
+            function create(finalvalue){
+                var tag = this.tag(label, value);
+                tag.element = $('<li class="tagit-choice"'
+                    + (value !== undefined ? ' tagValue="' + value + '"' : '') + '>'
+                    + (this.options.sortable == 'handle' ? '<a class="ui-icon ui-icon-grip-dotted-vertical" style="float:left"></a>' : '')
+                    + '<span class="tagit-text">' + tag.labelHtml() + '</span><a class="tagit-close">x</a></li>');
 
-            var tagExists = this._exists(label, value);
-            if (tagExists !== false && tagExists != this.input.parent().index()) {
-                this._highlightExisting(tagExists);
+                var tagExists = this._exists(label, value);
+                if (tagExists !== false && tagExists != this.input.parent().index()) {
+                    this._highlightExisting(tagExists);
 
-                if (this.input.data().editing) {
-                    tag.index = this.input.parents('.tagit-new').index();
-                    this._handleDuplicateEditedTag(tag);
+                    if (this.input.data().editing) {
+                        tag.index = this.input.parents('.tagit-new').index();
+                        this._handleDuplicateEditedTag(tag);
+                    }
+
+                    return false;
                 }
 
-                return false;
+                if (this.input.data().editing) {
+                    this._handleUpdateEditedTag(tag);
+                }
+                else {
+                    tag.element.insertBefore(this.input.parent());
+                    this.tagsArray.push(tag);
+                }
+
+                this.input.val("");
+
+                if (this.options.select)
+                    this._addSelect(tag);
+                if (this.options.tagsChanged)
+                    this.options.tagsChanged(tag.label, 'added', tag.element);
+
+                return true;
             }
 
-            if (this.input.data().editing) {
-                this._handleUpdateEditedTag(tag);
+            if (value===undefined{
+                this.option.createTagValuecreate(create);
             }
-            else {
-                tag.element.insertBefore(this.input.parent());
-                this.tagsArray.push(tag);
-            }
+            else
+                create(value);
 
-            this.input.val("");
-
-            if (this.options.select)
-                this._addSelect(tag);
-            if (this.options.tagsChanged)
-                this.options.tagsChanged(tag.label, 'added', tag.element);
-
-            return true;
+            
         },
 
         _exists:function (label, value) {
