@@ -442,7 +442,7 @@
             }
 
             if (value===undefined){
-                this.option.createTagValuecreate(create);
+                this.options.createTagValue(create);
             }
             else
                 create(value);
