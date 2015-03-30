@@ -404,39 +404,41 @@
             if (label == "")
                 return false;
 
+            var self=this;
+
             function create(finalvalue){
-                var tag = this.tag(label, finalvalue);
+                var tag = self.tag(label, finalvalue);
                 tag.element = $('<li class="tagit-choice"'
                     + (finalvalue !== undefined ? ' tagValue="' + finalvalue + '"' : '') + '>'
-                    + (this.options.sortable == 'handle' ? '<a class="ui-icon ui-icon-grip-dotted-vertical" style="float:left"></a>' : '')
+                    + (self.options.sortable == 'handle' ? '<a class="ui-icon ui-icon-grip-dotted-vertical" style="float:left"></a>' : '')
                     + '<span class="tagit-text">' + tag.labelHtml() + '</span><a class="tagit-close">x</a></li>');
 
-                var tagExists = this._exists(label, finalvalue);
-                if (tagExists !== false && tagExists != this.input.parent().index()) {
-                    this._highlightExisting(tagExists);
+                var tagExists = self._exists(label, finalvalue);
+                if (tagExists !== false && tagExists != self.input.parent().index()) {
+                    self._highlightExisting(tagExists);
 
-                    if (this.input.data().editing) {
-                        tag.index = this.input.parents('.tagit-new').index();
-                        this._handleDuplicateEditedTag(tag);
+                    if (self.input.data().editing) {
+                        tag.index = self.input.parents('.tagit-new').index();
+                        self._handleDuplicateEditedTag(tag);
                     }
 
                     return false;
                 }
 
-                if (this.input.data().editing) {
-                    this._handleUpdateEditedTag(tag);
+                if (self.input.data().editing) {
+                    self._handleUpdateEditedTag(tag);
                 }
                 else {
-                    tag.element.insertBefore(this.input.parent());
-                    this.tagsArray.push(tag);
+                    tag.element.insertBefore(self.input.parent());
+                    self.tagsArray.push(tag);
                 }
 
-                this.input.val("");
+                self.input.val("");
 
-                if (this.options.select)
-                    this._addSelect(tag);
-                if (this.options.tagsChanged)
-                    this.options.tagsChanged(tag.label, 'added', tag.element);
+                if (self.options.select)
+                    self._addSelect(tag);
+                if (self.options.tagsChanged)
+                    self.options.tagsChanged(tag.label, 'added', tag.element);
 
                 return true;
             }
