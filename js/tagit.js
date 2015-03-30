@@ -405,13 +405,13 @@
                 return false;
 
             function create(finalvalue){
-                var tag = this.tag(label, value);
+                var tag = this.tag(label, finalvalue);
                 tag.element = $('<li class="tagit-choice"'
-                    + (value !== undefined ? ' tagValue="' + value + '"' : '') + '>'
+                    + (finalvalue !== undefined ? ' tagValue="' + finalvalue + '"' : '') + '>'
                     + (this.options.sortable == 'handle' ? '<a class="ui-icon ui-icon-grip-dotted-vertical" style="float:left"></a>' : '')
                     + '<span class="tagit-text">' + tag.labelHtml() + '</span><a class="tagit-close">x</a></li>');
 
-                var tagExists = this._exists(label, value);
+                var tagExists = this._exists(label, finalvalue);
                 if (tagExists !== false && tagExists != this.input.parent().index()) {
                     this._highlightExisting(tagExists);
 
@@ -442,7 +442,7 @@
             }
 
             if (value===undefined){
-                this.options.createTagValue(create);
+                this.options.createTagValue(label,create);
             }
             else
                 create(value);
